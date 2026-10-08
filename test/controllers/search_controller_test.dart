@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/controllers/search_controller.dart';
-import 'package:test_app/data/repositories/music_repository.dart';
-import 'package:test_app/models/search_results.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/playlists/playlist_service.dart';
+import 'package:nades_music_player/controllers/search_controller.dart';
+import 'package:nades_music_player/data/repositories/music_repository.dart';
+import 'package:nades_music_player/models/search_results.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/playlists/playlist_service.dart';
 
 void main() {
   final sampleTracks = [

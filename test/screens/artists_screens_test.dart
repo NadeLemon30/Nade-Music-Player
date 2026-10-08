@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/controllers/library_controller.dart';
-import 'package:test_app/data/repositories/music_repository.dart';
-import 'package:test_app/models/artist.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/screens/library/artist_detail_screen.dart';
-import 'package:test_app/screens/library/artists_list_screen.dart';
-import 'package:test_app/widgets/track_tile.dart';
+import 'package:nades_music_player/controllers/library_controller.dart';
+import 'package:nades_music_player/data/repositories/music_repository.dart';
+import 'package:nades_music_player/models/artist.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/screens/library/artist_detail_screen.dart';
+import 'package:nades_music_player/screens/library/artists_list_screen.dart';
+import 'package:nades_music_player/widgets/track_tile.dart';
 
 import '../helpers/fake_library_controller.dart';
 

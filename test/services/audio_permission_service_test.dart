@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/services/permissions/audio_permission_service.dart';
+import 'package:nades_music_player/services/permissions/audio_permission_service.dart';
 
 void main() {
   group('MockAudioPermissionService', () {

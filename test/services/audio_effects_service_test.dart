@@ -4,12 +4,12 @@ import 'package:drift/native.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/data/database/app_database.dart';
-import 'package:test_app/data/repositories/audio_effects_preferences.dart';
-import 'package:test_app/models/audio_effects.dart';
-import 'package:test_app/services/audio_effects/audio_effects_backend.dart';
-import 'package:test_app/services/audio_effects/audio_effects_service.dart';
-import 'package:test_app/services/audio_effects/native_effects_bridge.dart';
+import 'package:nades_music_player/data/database/app_database.dart';
+import 'package:nades_music_player/data/repositories/audio_effects_preferences.dart';
+import 'package:nades_music_player/models/audio_effects.dart';
+import 'package:nades_music_player/services/audio_effects/audio_effects_backend.dart';
+import 'package:nades_music_player/services/audio_effects/audio_effects_service.dart';
+import 'package:nades_music_player/services/audio_effects/native_effects_bridge.dart';
 
 import '../helpers/fake_audio_effects.dart';
 

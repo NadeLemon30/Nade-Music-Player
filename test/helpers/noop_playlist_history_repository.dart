@@ -1,4 +1,4 @@
-import 'package:test_app/data/repositories/playlist_history_repository.dart';
+import 'package:nades_music_player/data/repositories/playlist_history_repository.dart';
 
 /// Lightweight in-memory stub of [PlaylistHistoryRepository] for widget and
 /// unit tests that never touch a real Drift database.

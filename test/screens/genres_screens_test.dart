@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/data/repositories/music_repository.dart';
-import 'package:test_app/models/genre.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/screens/library/genre_detail_screen.dart';
-import 'package:test_app/screens/library/genres_list_screen.dart';
-import 'package:test_app/widgets/track_tile.dart';
+import 'package:nades_music_player/data/repositories/music_repository.dart';
+import 'package:nades_music_player/models/genre.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/screens/library/genre_detail_screen.dart';
+import 'package:nades_music_player/screens/library/genres_list_screen.dart';
+import 'package:nades_music_player/widgets/track_tile.dart';
 
 void main() {
   final sampleGenreTracks = [

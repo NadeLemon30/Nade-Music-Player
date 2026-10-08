@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <application
-        android:label="test_app"
+        android:label="Nade's Music Player"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

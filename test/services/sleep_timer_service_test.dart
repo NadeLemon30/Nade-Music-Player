@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/services/sleep_timer_service.dart';
+import 'package:nades_music_player/services/sleep_timer_service.dart';
 
 void main() {
   // Always use a fake clock so unit tests stay deterministic regardless of

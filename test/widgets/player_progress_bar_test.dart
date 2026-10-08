@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/player/player_controller.dart';
-import 'package:test_app/services/playback/play_history_service.dart';
-import 'package:test_app/widgets/player/player_progress_bar.dart';
+import 'package:nades_music_player/player/player_controller.dart';
+import 'package:nades_music_player/services/playback/play_history_service.dart';
+import 'package:nades_music_player/widgets/player/player_progress_bar.dart';
 
 import '../helpers/fake_audio_player_service.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/track.dart';
+import 'package:nades_music_player/models/track.dart';
 
 void main() {
   group('Track model', () {

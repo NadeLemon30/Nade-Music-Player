@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/scanner/music_scanner_service.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/scanner/music_scanner_service.dart';
 
 void main() {
   group('MockMusicScannerService', () {

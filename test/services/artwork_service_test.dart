@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/artwork/artwork_service.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/artwork/artwork_service.dart';
 
 void main() {
   late Directory tempDir;

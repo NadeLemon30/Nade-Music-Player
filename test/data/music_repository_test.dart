@@ -1,8 +1,8 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/data/database/app_database.dart';
-import 'package:test_app/data/repositories/music_repository.dart';
-import 'package:test_app/models/track.dart';
+import 'package:nades_music_player/data/database/app_database.dart';
+import 'package:nades_music_player/data/repositories/music_repository.dart';
+import 'package:nades_music_player/models/track.dart';
 
 void main() {
   late AppDatabase db;

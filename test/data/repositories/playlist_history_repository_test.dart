@@ -1,7 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/data/database/app_database.dart';
-import 'package:test_app/data/repositories/playlist_history_repository.dart';
+import 'package:nades_music_player/data/database/app_database.dart';
+import 'package:nades_music_player/data/repositories/playlist_history_repository.dart';
 
 void main() {
   group('PlaylistHistoryRepository', () {

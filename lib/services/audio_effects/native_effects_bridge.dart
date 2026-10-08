@@ -112,12 +112,12 @@ abstract class NativeEffectsBridge {
 
 /// [MethodChannel] implementation of [NativeEffectsBridge].
 ///
-/// Talks to `MainActivity`'s `com.example.test_app/audio_effects` channel.
+/// Talks to `MainActivity`'s `com.nade.musicplayer/audio_effects` channel.
 class MethodChannelNativeEffectsBridge extends NativeEffectsBridge {
   MethodChannelNativeEffectsBridge({MethodChannel? channel})
       : _channel = channel ?? const MethodChannel(_channelName);
 
-  static const String _channelName = 'com.example.test_app/audio_effects';
+  static const String _channelName = 'com.nade.musicplayer/audio_effects';
 
   final MethodChannel _channel;
 

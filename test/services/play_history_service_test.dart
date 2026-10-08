@@ -1,8 +1,8 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/data/database/app_database.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/playback/play_history_service.dart';
+import 'package:nades_music_player/data/database/app_database.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/playback/play_history_service.dart';
 
 Track buildTrack(String id, String title) {
   return Track(

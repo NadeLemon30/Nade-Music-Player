@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:just_audio/just_audio.dart' as ja;
-import 'package:test_app/models/track.dart';
-import 'package:test_app/player/player_state.dart';
-import 'package:test_app/services/audio/audio_player_service.dart';
-import 'package:test_app/services/playback/play_history_service.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/player/player_state.dart';
+import 'package:nades_music_player/services/audio/audio_player_service.dart';
+import 'package:nades_music_player/services/playback/play_history_service.dart';
 
 /// In-memory fake of [AudioPlayerService] that records calls and lets tests
 /// drive streams (position, duration, completion) directly.

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/playlist.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/playlists/playlist_service.dart';
-import 'package:test_app/widgets/playlists/playlist_picker.dart';
+import 'package:nades_music_player/models/playlist.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/playlists/playlist_service.dart';
+import 'package:nades_music_player/widgets/playlists/playlist_picker.dart';
 
 import '../helpers/fake_audio_player_service.dart';
 

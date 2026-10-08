@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/player/queue/playback_queue.dart';
-import 'package:test_app/player/queue/queue_item.dart';
+import 'package:nades_music_player/player/queue/playback_queue.dart';
+import 'package:nades_music_player/player/queue/queue_item.dart';
 
 import '../../helpers/fake_audio_player_service.dart';
 

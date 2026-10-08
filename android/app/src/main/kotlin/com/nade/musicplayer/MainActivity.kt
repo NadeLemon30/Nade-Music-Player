@@ -1,4 +1,4 @@
-package com.example.test_app
+package com.nade.musicplayer
 
 import android.media.audiofx.BassBoost
 import android.media.audiofx.LoudnessEnhancer
@@ -41,7 +41,7 @@ import kotlin.math.roundToInt
 class MainActivity : AudioServiceActivity() {
 
     private companion object {
-        const val CHANNEL = "com.example.test_app/audio_effects"
+        const val CHANNEL = "com.nade.musicplayer/audio_effects"
 
         /**
          * The strength scale Android documents for `BassBoost.setStrength(short)`

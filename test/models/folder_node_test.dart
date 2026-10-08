@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/folder_node.dart';
+import 'package:nades_music_player/models/folder_node.dart';
 
 void main() {
   group('FolderNode Model', () {

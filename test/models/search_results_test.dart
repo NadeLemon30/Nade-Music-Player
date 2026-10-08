@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/album.dart';
-import 'package:test_app/models/artist.dart';
-import 'package:test_app/models/folder_node.dart';
-import 'package:test_app/models/genre.dart';
-import 'package:test_app/models/search_results.dart';
-import 'package:test_app/models/track.dart';
+import 'package:nades_music_player/models/album.dart';
+import 'package:nades_music_player/models/artist.dart';
+import 'package:nades_music_player/models/folder_node.dart';
+import 'package:nades_music_player/models/genre.dart';
+import 'package:nades_music_player/models/search_results.dart';
+import 'package:nades_music_player/models/track.dart';
 
 void main() {
   group('SearchResults Model & SearchFilter Enum', () {

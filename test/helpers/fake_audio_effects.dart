@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:test_app/models/audio_effects.dart';
-import 'package:test_app/services/audio_effects/audio_effects_backend.dart';
-import 'package:test_app/services/audio_effects/native_effects_bridge.dart';
+import 'package:nades_music_player/models/audio_effects.dart';
+import 'package:nades_music_player/services/audio_effects/audio_effects_backend.dart';
+import 'package:nades_music_player/services/audio_effects/native_effects_bridge.dart';
 
 /// In-memory fake of [AudioEffectsBackend] that records every call and lets a
 /// test decide what band configuration the "platform" reports.

@@ -34,7 +34,7 @@ Future<void> main() async {
   globalAudioHandler = await AudioService.init(
     builder: () => MusicAudioHandler(audioEffects: audioEffects),
     config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.example.test_app.channel.audio',
+      androidNotificationChannelId: 'com.nade.musicplayer.channel.audio',
       androidNotificationChannelName: 'Music playback',
       androidNotificationChannelDescription:
           'Shows playback controls on Android.',
@@ -68,7 +68,7 @@ class MusicPlayerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Music Player',
+      title: "Nade's Music Player",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,

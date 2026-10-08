@@ -2,10 +2,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/album.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/artwork/artwork_service.dart';
-import 'package:test_app/widgets/album_art.dart';
+import 'package:nades_music_player/models/album.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/artwork/artwork_service.dart';
+import 'package:nades_music_player/widgets/album_art.dart';
 
 void main() {
   // 1x1 transparent PNG bytes for widget test rendering

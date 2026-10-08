@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/widgets/playback_controls.dart';
+import 'package:nades_music_player/widgets/playback_controls.dart';
 
 void main() {
   testWidgets('shows pause while playing and play while paused',

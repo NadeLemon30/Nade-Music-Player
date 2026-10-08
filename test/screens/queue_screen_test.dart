@@ -2,11 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/player/player_controller.dart';
-import 'package:test_app/screens/queue/queue_screen.dart';
-import 'package:test_app/services/favorites/favorites_service.dart';
-import 'package:test_app/services/playback/play_history_service.dart';
-import 'package:test_app/widgets/track_tile.dart';
+import 'package:nades_music_player/player/player_controller.dart';
+import 'package:nades_music_player/screens/queue/queue_screen.dart';
+import 'package:nades_music_player/services/favorites/favorites_service.dart';
+import 'package:nades_music_player/services/playback/play_history_service.dart';
+import 'package:nades_music_player/widgets/track_tile.dart';
 
 import '../helpers/fake_audio_player_service.dart';
 

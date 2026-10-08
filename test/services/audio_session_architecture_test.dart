@@ -147,7 +147,7 @@ void main() {
     test('the native side binds all three effects to the reported session id',
         () {
       final activity = read(File(
-        'android/app/src/main/kotlin/com/example/test_app/MainActivity.kt',
+        'android/app/src/main/kotlin/com/nade/musicplayer/MainActivity.kt',
       ));
 
       // The preamp rides the same channel and the same session id as the two

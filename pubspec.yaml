@@ -1,5 +1,5 @@
-name: test_app
-description: "A new Flutter project."
+name: nades_music_player
+description: "Nade's Music Player."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -59,6 +59,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   drift_dev: ^2.34.0
   build_runner: ^2.15.1
+  flutter_launcher_icons: ^0.14.4
 
 dependency_overrides:
   on_audio_query_android:
@@ -108,3 +109,26 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Launcher icons (all supported platforms) generated from the one square master.
+# assets/app-icon-1024.png is a center-cropped + upscaled derivative of
+# assets/app-icon.png (385x370 with transparent corners -> 1024x1024).
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/app-icon-1024.png
+  remove_alpha_ios: true
+  background_color_ios: "#A7ACB2"
+  adaptive_icon_background: "#A7ACB2"
+  adaptive_icon_foreground: assets/app-icon-1024.png
+  adaptive_icon_foreground_inset: 4
+  web:
+    generate: true
+    image_path: assets/app-icon-1024.png
+  windows:
+    generate: true
+    image_path: assets/app-icon-1024.png
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: assets/app-icon-1024.png

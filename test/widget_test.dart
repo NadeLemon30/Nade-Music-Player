@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/data/repositories/music_repository.dart';
-import 'package:test_app/main.dart';
+import 'package:nades_music_player/data/repositories/music_repository.dart';
+import 'package:nades_music_player/main.dart';
 
 void main() {
   testWidgets('MusicPlayerApp UI smoke test', (WidgetTester tester) async {

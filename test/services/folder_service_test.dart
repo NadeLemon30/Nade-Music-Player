@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/track.dart';
-import 'package:test_app/services/folders/folder_service.dart';
+import 'package:nades_music_player/models/track.dart';
+import 'package:nades_music_player/services/folders/folder_service.dart';
 
 void main() {
   final service = FolderService();

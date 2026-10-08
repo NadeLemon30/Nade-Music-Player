@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/controllers/audio_effects_controller.dart';
-import 'package:test_app/models/audio_effects.dart';
-import 'package:test_app/player/player_controller.dart';
-import 'package:test_app/screens/player/equalizer_screen.dart';
-import 'package:test_app/services/audio_effects/audio_effects_service.dart';
-import 'package:test_app/services/audio_effects/native_effects_bridge.dart';
+import 'package:nades_music_player/controllers/audio_effects_controller.dart';
+import 'package:nades_music_player/models/audio_effects.dart';
+import 'package:nades_music_player/player/player_controller.dart';
+import 'package:nades_music_player/screens/player/equalizer_screen.dart';
+import 'package:nades_music_player/services/audio_effects/audio_effects_service.dart';
+import 'package:nades_music_player/services/audio_effects/native_effects_bridge.dart';
 
 
 import '../helpers/fake_audio_effects.dart';

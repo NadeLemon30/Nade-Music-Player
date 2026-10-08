@@ -1,11 +1,11 @@
 {
-    "name": "test_app",
-    "short_name": "test_app",
+    "name": "Nade's Music Player",
+    "short_name": "Nade's Player",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Nade's Music Player.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

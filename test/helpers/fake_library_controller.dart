@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:test_app/controllers/library_controller.dart';
+import 'package:nades_music_player/controllers/library_controller.dart';
 
 /// A [LibraryController] that serves a fixed [LibraryData] snapshot without
 /// touching any repositories.

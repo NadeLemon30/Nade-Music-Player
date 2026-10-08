@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/models/audio_metadata.dart';
-import 'package:test_app/services/metadata/metadata_extractor_service.dart';
+import 'package:nades_music_player/models/audio_metadata.dart';
+import 'package:nades_music_player/services/metadata/metadata_extractor_service.dart';
 
 void main() {
   group('DefaultMetadataExtractorService', () {

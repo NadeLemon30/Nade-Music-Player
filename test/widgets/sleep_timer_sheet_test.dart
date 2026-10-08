@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_app/services/sleep_timer_service.dart';
-import 'package:test_app/widgets/player/sleep_timer_sheet.dart';
+import 'package:nades_music_player/services/sleep_timer_service.dart';
+import 'package:nades_music_player/widgets/player/sleep_timer_sheet.dart';
 
 void main() {
   late ProviderContainer container;
