@@ -43,3 +43,29 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// Produce a human-named copy of every assembled APK: "Nade's Music Player.apk".
+// Flutter's Gradle plugin always publishes its artifact as
+// build/app/outputs/flutter-apk/app-<mode>.apk, and `flutter build apk`
+// validates that exact name after the build (and `flutter run`/install lookup
+// the same name), so the branded file is an extra copy made once the assemble
+// task — including Flutter's own copy step — has finished.
+val brandedApkName = "Nade's Music Player.apk"
+val brandedApkDirectory = layout.buildDirectory.dir("outputs/flutter-apk")
+
+listOf("Debug", "Profile", "Release").forEach { variantName ->
+    val buildMode = variantName.replaceFirstChar { it.lowercaseChar() }
+    val copyBrandedApk = tasks.register("copyBrandedApk$variantName") {
+        val sourceApk = brandedApkDirectory.map { it.file("app-$buildMode.apk") }
+        val targetApk = brandedApkDirectory.map { it.file(brandedApkName) }
+        doLast {
+            val sourceFile = sourceApk.get().asFile
+            if (sourceFile.isFile) {
+                sourceFile.copyTo(targetApk.get().asFile, overwrite = true)
+            }
+        }
+    }
+    tasks.matching { it.name == "assemble$variantName" }.configureEach {
+        finalizedBy(copyBrandedApk)
+    }
+}

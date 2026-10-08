@@ -60,6 +60,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: "build/app/outputs/flutter-apk/Nade's Music Player.apk"
           generate_release_notes: true
           make_latest: true
