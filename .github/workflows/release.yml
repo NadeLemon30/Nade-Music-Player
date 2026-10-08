@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build Android APK
@@ -34,11 +38,25 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      # 5. Build release APK
+      # 5. Quality gate: fail the release on analysis *errors* only.
+      #    The codebase carries a documented warning/info baseline (AGENTS.md),
+      #    so warnings/infos are reported but don't block a release.
+      - name: Analyze
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+
+      # 6. Run the full test suite for visibility. The suite has a documented
+      #    set of known baseline failures (AGENTS.md), so this step reports
+      #    results without blocking — flip `continue-on-error` to false once
+      #    the baseline is green.
+      - name: Run tests
+        run: flutter test
+        continue-on-error: true
+
+      # 7. Build release APK
       - name: Build APK
         run: flutter build apk --release
 
-      # 6. Create GitHub Release and upload APK
+      # 8. Create GitHub Release and upload APK
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Analyze, test and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      # Fail on analysis *errors* only; the warning/info baseline is
+      # documented in AGENTS.md and reported without blocking (same rule
+      # as the release workflow).
+      - name: Analyze
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+
+      # Full suite for visibility; known baseline failures are documented
+      # in AGENTS.md — flip `continue-on-error` to false once green.
+      - name: Run tests
+        run: flutter test
+        continue-on-error: true
+
+      - name: Build debug APK
+        run: flutter build apk --debug
