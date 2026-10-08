@@ -60,6 +60,10 @@ dev_dependencies:
   drift_dev: ^2.34.0
   build_runner: ^2.15.1
 
+dependency_overrides:
+  on_audio_query_android:
+    path: packages/on_audio_query_android
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
