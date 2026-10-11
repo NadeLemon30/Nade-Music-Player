@@ -44,13 +44,14 @@ flutter {
     source = "../.."
 }
 
-// Produce a human-named copy of every assembled APK: "Nade's Music Player.apk".
+// Produce a versioned, human-named copy of every assembled APK, for example
+// "Nade'sMusicPlayerV0.2.1.apk".
 // Flutter's Gradle plugin always publishes its artifact as
 // build/app/outputs/flutter-apk/app-<mode>.apk, and `flutter build apk`
 // validates that exact name after the build (and `flutter run`/install lookup
 // the same name), so the branded file is an extra copy made once the assemble
 // task — including Flutter's own copy step — has finished.
-val brandedApkName = "Nade's Music Player.apk"
+val brandedApkName = "Nade'sMusicPlayerV${flutter.versionName}.apk"
 val brandedApkDirectory = layout.buildDirectory.dir("outputs/flutter-apk")
 
 listOf("Debug", "Profile", "Release").forEach { variantName ->
