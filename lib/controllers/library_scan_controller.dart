@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/repositories/lyrics_repository.dart';
 import '../data/repositories/music_repository.dart';
 import '../services/favorites/favorites_service.dart';
 import '../services/playback/play_history_service.dart';
@@ -83,21 +84,22 @@ class LibraryScanController extends Notifier<LibraryScanState> {
 
       return result.total;
     } catch (e) {
-      state = state.copyWith(
-        isScanning: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isScanning: false, errorMessage: e.toString());
       return 0;
     }
   }
 
   /// Drops deleted-track entries from the in-memory collection mirrors using
   /// the set of tracks still present in the database after a scan (spec 23).
+  ///
+  /// Also removes cached lyrics for tracks no longer in the library (spec 35);
+  /// external `.lrc`/`.txt` files are never deleted.
   Future<void> _syncCollectionMirrors() async {
     final availableIds = await _repository.getAllTrackIds();
     await ref.read(favoritesServiceProvider).pruneMissingTracks(availableIds);
     await ref.read(playHistoryServiceProvider).pruneMissingTracks(availableIds);
     await ref.read(playlistServiceProvider).pruneMissingTracks(availableIds);
+    await ref.read(lyricsRepositoryProvider).pruneMissingTracks(availableIds);
   }
 
   /// Clears all library tracks and metadata from the database.
@@ -110,9 +112,10 @@ class LibraryScanController extends Notifier<LibraryScanState> {
 /// Provider exposing [LibraryScanController] and [LibraryScanState].
 final libraryScanControllerProvider =
     NotifierProvider<LibraryScanController, LibraryScanState>(
-  LibraryScanController.new,
-);
+      LibraryScanController.new,
+    );
 
 /// Provider exposing the [MusicLibrarySyncService].
-final musicLibrarySyncServiceProvider =
-    Provider<MusicLibrarySyncService>((ref) => MusicLibrarySyncService());
+final musicLibrarySyncServiceProvider = Provider<MusicLibrarySyncService>(
+  (ref) => MusicLibrarySyncService(),
+);

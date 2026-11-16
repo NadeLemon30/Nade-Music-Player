@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/lyrics/lyrics_controller.dart';
 import '../../core/utils/duration_utils.dart';
+import '../../models/track.dart';
 import '../../player/player_controller.dart';
 import '../../services/favorites/favorites_service.dart';
 import '../../services/sleep_timer_service.dart';
@@ -12,6 +14,7 @@ import '../../widgets/player/sleep_timer_sheet.dart';
 import '../queue/queue_screen.dart';
 import 'audio_effects_screen.dart';
 import 'equalizer_screen.dart';
+import 'lyrics_screen.dart';
 
 /// Full-screen "Now Playing" view bound to [playerNotifierProvider].
 ///
@@ -31,9 +34,9 @@ class PlayerScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Now Playing'),
         actions: [
-          // Phase 4A: sleep timer. Inactive → outlined bedtime action. Active →
+          // Phase 4A: sleep timer. Inactive â†’ outlined bedtime action. Active â†’
           // compact "bedtime mm:ss" pill that doubles as the entry point
-          // (spec §12 compact indicator), opening the preset/active sheet.
+          // (spec Â§12 compact indicator), opening the preset/active sheet.
           Consumer(
             builder: (context, ref, _) {
               final remaining = ref.watch(sleepTimerStateProvider).value;
@@ -67,27 +70,27 @@ class PlayerScreen extends ConsumerWidget {
           if (track != null)
             Consumer(
               builder: (context, ref, _) {
-                final isFavorite = ref
-                        .watch(favoriteIdsProvider)
-                        .value
-                        ?.contains(track.id) ??
+                final isFavorite =
+                    ref.watch(favoriteIdsProvider).value?.contains(track.id) ??
                     false;
                 return IconButton(
-                  tooltip:
-                      isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+                  tooltip: isFavorite
+                      ? 'Remove from Favorites'
+                      : 'Add to Favorites',
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
                   ),
                   color: isFavorite ? Colors.redAccent : null,
-                  onPressed: () => ref
-                      .read(favoritesServiceProvider)
-                      .toggleFavorite(track),
+                  onPressed: () =>
+                      ref.read(favoritesServiceProvider).toggleFavorite(track),
                 );
               },
             ),
         ],
       ),
-      body: track == null ? _buildEmptyState(theme) : _buildPlayer(context, theme, playerState, player),
+      body: track == null
+          ? _buildEmptyState(theme)
+          : _buildPlayer(context, theme, playerState, player),
     );
   }
 
@@ -136,11 +139,7 @@ class PlayerScreen extends ConsumerWidget {
                   final maxSide = constraints.biggest.shortestSide;
                   final side = maxSide.clamp(140.0, 420.0).toDouble();
                   return Center(
-                    child: AlbumArt(
-                      track: track,
-                      size: side,
-                      borderRadius: 20,
-                    ),
+                    child: AlbumArt(track: track, size: side, borderRadius: 20),
                   );
                 },
               ),
@@ -262,7 +261,8 @@ class PlayerScreen extends ConsumerWidget {
               onPlayPause: player.togglePlayPause,
               onSeekBackward: player.seekBackward,
               onPrevious: player.previous,
-              onNext: playerState.hasNext ||
+              onNext:
+                  playerState.hasNext ||
                       playerState.repeatMode == RepeatMode.all
                   ? player.next
                   : null,
@@ -272,10 +272,10 @@ class PlayerScreen extends ConsumerWidget {
 
             const SizedBox(height: 8),
 
-            // Player options (spec §13): Queue + Sleep Timer are live; the
+            // Player options (spec Â§13): Queue + Sleep Timer are live; the
             // remaining entries are placeholders for future phases.
             TextButton.icon(
-              onPressed: () => _showPlayerOptions(context),
+              onPressed: () => _showPlayerOptions(context, track),
               icon: const Icon(Icons.more_horiz),
               label: const Text('Options'),
             ),
@@ -285,9 +285,9 @@ class PlayerScreen extends ConsumerWidget {
     );
   }
 
-  /// Player options menu (spec §13): Queue + Sleep Timer are implemented; the
+  /// Player options menu (spec Â§13): Queue + Sleep Timer are implemented; the
   /// remaining entries are placeholders until their own phases land.
-  void _showPlayerOptions(BuildContext context) {
+  void _showPlayerOptions(BuildContext context, Track track) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -311,9 +311,7 @@ class PlayerScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(sheetContext).pop();
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const QueueScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const QueueScreen()),
                   );
                 },
               ),
@@ -335,9 +333,7 @@ class PlayerScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(sheetContext).pop();
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const EqualizerScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const EqualizerScreen()),
                   );
                 },
               ),
@@ -349,9 +345,27 @@ class PlayerScreen extends ConsumerWidget {
                   showSleepTimerSheet(context);
                 },
               ),
-              const ListTile(
-                leading: Icon(Icons.lyrics_outlined),
-                title: Text('Lyrics'),
+              Consumer(
+                builder: (context, ref, _) {
+                  final lyricsState = ref.watch(lyricsControllerProvider);
+                  final showUnavailable =
+                      lyricsState.track?.id == track.id &&
+                      lyricsState.unavailable &&
+                      !lyricsState.loading &&
+                      !lyricsState.error;
+                  return ListTile(
+                    leading: const Icon(Icons.lyrics_outlined),
+                    title: Text(
+                      showUnavailable ? 'Lyrics unavailable' : 'Lyrics',
+                    ),
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const LyricsScreen()),
+                      );
+                    },
+                  );
+                },
               ),
               const ListTile(
                 leading: Icon(Icons.speed),
@@ -387,10 +401,7 @@ class _ResumeBanner extends StatelessWidget {
   final Duration position;
   final VoidCallback onDismiss;
 
-  const _ResumeBanner({
-    required this.position,
-    required this.onDismiss,
-  });
+  const _ResumeBanner({required this.position, required this.onDismiss});
 
   @override
   Widget build(BuildContext context) {

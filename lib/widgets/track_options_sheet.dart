@@ -8,6 +8,7 @@ import '../models/artist.dart';
 import '../models/track.dart';
 import '../screens/library/album_detail_screen.dart';
 import '../screens/library/artist_detail_screen.dart';
+import '../screens/player/lyrics_screen.dart';
 import '../services/favorites/favorites_service.dart';
 import 'album_art.dart';
 import 'playlist_picker_sheet.dart';
@@ -21,6 +22,7 @@ void showTrackOptionsSheet(
   VoidCallback? onAddToQueue,
   VoidCallback? onAddToPlaylist,
   VoidCallback? onFavorite,
+  VoidCallback? onViewLyrics,
   VoidCallback? onViewArtist,
   VoidCallback? onViewAlbum,
   VoidCallback? onShowDetails,
@@ -41,13 +43,13 @@ void showTrackOptionsSheet(
               children: [
                 // Track Info Header
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 8.0,
+                  ),
                   child: Row(
                     children: [
-                      AlbumArt(
-                        size: 52,
-                        artUrl: track.albumArtUri,
-                      ),
+                      AlbumArt(size: 52, artUrl: track.albumArtUri),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
@@ -71,10 +73,10 @@ void showTrackOptionsSheet(
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
-                            if (track.album != null && track.album!.isNotEmpty) ...[
+                            if (track.album.isNotEmpty) ...[
                               const SizedBox(height: 2),
                               Text(
-                                track.album!,
+                                track.album,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.bodySmall?.copyWith(
@@ -109,7 +111,9 @@ void showTrackOptionsSheet(
                     if (onPlayNow != null) {
                       onPlayNow();
                     } else {
-                      ref.read(playerNotifierProvider.notifier).playTrack(track);
+                      ref
+                          .read(playerNotifierProvider.notifier)
+                          .playTrack(track);
                     }
                   },
                 ),
@@ -139,7 +143,9 @@ void showTrackOptionsSheet(
                     if (onAddToQueue != null) {
                       onAddToQueue();
                     } else {
-                      ref.read(playerNotifierProvider.notifier).addToQueue(track);
+                      ref
+                          .read(playerNotifierProvider.notifier)
+                          .addToQueue(track);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Added "${track.title}" to queue'),
@@ -162,12 +168,27 @@ void showTrackOptionsSheet(
                   },
                 ),
                 ListTile(
+                  leading: const Icon(Icons.lyrics_outlined),
+                  title: const Text('View Lyrics'),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    if (onViewLyrics != null) {
+                      onViewLyrics();
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const LyricsScreen()),
+                      );
+                    }
+                  },
+                ),
+                ListTile(
                   leading: Icon(
                     ref.watch(favoriteIdsProvider).value?.contains(track.id) ==
                             true
                         ? Icons.favorite
                         : Icons.favorite_border,
-                    color: ref
+                    color:
+                        ref
                                 .watch(favoriteIdsProvider)
                                 .value
                                 ?.contains(track.id) ==
@@ -186,13 +207,11 @@ void showTrackOptionsSheet(
                     if (onFavorite != null) {
                       onFavorite();
                     } else {
-                      ref
-                          .read(favoritesServiceProvider)
-                          .toggleFavorite(track);
+                      ref.read(favoritesServiceProvider).toggleFavorite(track);
                     }
                   },
                 ),
-                if (track.album != null && track.album!.isNotEmpty)
+                if (track.album.isNotEmpty)
                   ListTile(
                     leading: const Icon(Icons.album),
                     title: Text('View Album (${track.album})'),
@@ -274,16 +293,19 @@ void _showTrackDetailsDialog(BuildContext context, Track track) {
           children: [
             _detailRow('Title', track.title),
             _detailRow('Artist', track.artist),
-            if (track.album != null) _detailRow('Album', track.album!),
-            if (track.albumArtist != null) _detailRow('Album Artist', track.albumArtist!),
-            if (track.genre != null) _detailRow('Genre', track.genre!),
+            if (track.album.isNotEmpty) _detailRow('Album', track.album),
+            if (track.albumArtist.isNotEmpty)
+              _detailRow('Album Artist', track.albumArtist),
+            if (track.genre.isNotEmpty) _detailRow('Genre', track.genre),
             if (track.year != null) _detailRow('Year', track.year.toString()),
-            if (track.trackNumber != null) _detailRow('Track #', track.trackNumber.toString()),
+            if (track.trackNumber != null)
+              _detailRow('Track #', track.trackNumber.toString()),
             if (track.duration != null && track.duration! > Duration.zero)
               _detailRow('Duration', DurationUtils.format(track.duration!)),
             if (track.fileSize != null)
               _detailRow('File Size', _formatFileSize(track.fileSize!)),
-            if (track.mimeType != null) _detailRow('MIME Type', track.mimeType!),
+            if (track.mimeType != null)
+              _detailRow('MIME Type', track.mimeType!),
             _detailRow('Path', track.filePath),
           ],
         ),
@@ -312,10 +334,7 @@ Widget _detailRow(String label, String value) {
           ),
         ),
         Expanded(
-          child: SelectableText(
-            value,
-            style: const TextStyle(fontSize: 13),
-          ),
+          child: SelectableText(value, style: const TextStyle(fontSize: 13)),
         ),
       ],
     ),

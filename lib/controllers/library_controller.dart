@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/repositories/album_repository.dart';
 import '../data/repositories/artist_repository.dart';
+import '../data/repositories/lyrics_repository.dart';
 import '../data/repositories/music_repository.dart';
 import '../models/album.dart';
 import '../models/artist.dart';
@@ -59,8 +60,7 @@ class LibraryData {
 /// tracks, artists, and albums — they display the data but never load it.
 class LibraryController extends Notifier<LibraryData> {
   MusicRepository get _musicRepository => ref.read(musicRepositoryProvider);
-  ArtistRepository get _artistRepository =>
-      ref.read(artistRepositoryProvider);
+  ArtistRepository get _artistRepository => ref.read(artistRepositoryProvider);
   AlbumRepository get _albumRepository => ref.read(albumRepositoryProvider);
 
   @override
@@ -118,11 +118,15 @@ class LibraryController extends Notifier<LibraryData> {
 
   /// Drops deleted-track entries from the in-memory collection mirrors using
   /// the set of tracks still present in the database after a scan (spec 23).
+  ///
+  /// Also removes cached lyrics for tracks no longer in the library (spec 35);
+  /// external `.lrc`/`.txt` files are never deleted.
   Future<void> _syncCollectionMirrors() async {
     final availableIds = await _musicRepository.getAllTrackIds();
     await ref.read(favoritesServiceProvider).pruneMissingTracks(availableIds);
     await ref.read(playHistoryServiceProvider).pruneMissingTracks(availableIds);
     await ref.read(playlistServiceProvider).pruneMissingTracks(availableIds);
+    await ref.read(lyricsRepositoryProvider).pruneMissingTracks(availableIds);
   }
 }
 
