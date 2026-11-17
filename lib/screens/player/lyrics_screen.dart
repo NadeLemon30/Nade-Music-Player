@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/lyrics/lyrics_controller.dart';
+import '../../core/lyrics/lyrics_file_picker.dart';
+import '../../data/repositories/lyrics_repository.dart';
 import '../../player/player_controller.dart';
 
 /// Displays lyrics for the currently playing track.
@@ -21,6 +23,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
   final Map<int, GlobalKey> _lineKeys = <int, GlobalKey>{};
   int _lastScrolledIndex = -1;
   String? _lastTrackId;
+  bool _importing = false;
 
   @override
   void dispose() {
@@ -46,6 +49,62 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
         alignment: 0.35,
       );
     });
+  }
+
+  Future<void> _pickLyricsFile() async {
+    if (_importing) return;
+    final track =
+        ref.read(lyricsControllerProvider).track ??
+        ref.read(playerNotifierProvider).currentTrack;
+    if (track == null) return;
+
+    setState(() => _importing = true);
+    try {
+      final picked = await ref.read(lyricsFilePickerProvider)();
+      if (picked == null || !mounted) return;
+
+      await ref
+          .read(lyricsControllerProvider.notifier)
+          .importLyricsBytes(picked.bytes, fileName: picked.name);
+      if (!mounted) return;
+
+      _lastScrolledIndex = -1;
+      _lineKeys.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Lyrics added from "${picked.name}"')),
+      );
+    } on LyricsReadException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('That file does not contain readable lyrics.'),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not add the lyrics file.')),
+      );
+    } finally {
+      if (mounted) setState(() => _importing = false);
+    }
+  }
+
+  Future<void> _removeImportedLyrics() async {
+    try {
+      await ref.read(lyricsControllerProvider.notifier).removeImportedLyrics();
+      if (!mounted) return;
+      _lastScrolledIndex = -1;
+      _lineKeys.clear();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Imported lyrics removed')));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not remove imported lyrics.')),
+      );
+    }
   }
 
   @override
@@ -76,6 +135,23 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                   : () => ref
                         .read(lyricsControllerProvider.notifier)
                         .resetOffset(),
+            ),
+          IconButton(
+            tooltip: 'Add or replace lyrics file',
+            icon: _importing
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.file_open_outlined),
+            onPressed: track == null || _importing ? null : _pickLyricsFile,
+          ),
+          if (state.isImported)
+            IconButton(
+              tooltip: 'Remove imported lyrics',
+              icon: const Icon(Icons.delete_outline),
+              onPressed: _removeImportedLyrics,
             ),
           IconButton(
             tooltip: 'Refresh lyrics',
@@ -125,9 +201,13 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
       return _MessageView(
         icon: Icons.error_outline,
         title: 'Unable to read lyrics',
-        subtitle: 'The song itself will continue playing normally.',
-        actionLabel: 'Try Again',
-        onAction: () =>
+        subtitle:
+            'The lyrics file could not be read. The song itself will continue '
+            'playing normally.',
+        actionLabel: _importing ? 'Adding...' : 'Add Lyrics File',
+        onAction: _importing ? null : _pickLyricsFile,
+        secondaryActionLabel: 'Try Again',
+        onSecondaryAction: () =>
             ref.read(lyricsControllerProvider.notifier).refreshCurrent(),
       );
     }
@@ -136,9 +216,13 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
       return _MessageView(
         icon: Icons.lyrics_outlined,
         title: 'No lyrics available',
-        subtitle: 'Lyrics could not be found for this song.',
-        actionLabel: 'Try Again',
-        onAction: () =>
+        subtitle:
+            'Lyrics could not be found for this song. You can add an .lrc or '
+            '.txt file from your device.',
+        actionLabel: _importing ? 'Adding...' : 'Add Lyrics File',
+        onAction: _importing ? null : _pickLyricsFile,
+        secondaryActionLabel: 'Try Again',
+        onSecondaryAction: () =>
             ref.read(lyricsControllerProvider.notifier).refreshCurrent(),
       );
     }
@@ -210,9 +294,8 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                 child: Text(
                   line.text,
                   textAlign: TextAlign.center,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(height: 1.5),
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.copyWith(height: 1.5),
                 ),
               );
             },
@@ -347,6 +430,8 @@ class _MessageView extends StatelessWidget {
     required this.subtitle,
     this.actionLabel,
     this.onAction,
+    this.secondaryActionLabel,
+    this.onSecondaryAction,
   });
 
   final IconData icon;
@@ -354,6 +439,8 @@ class _MessageView extends StatelessWidget {
   final String subtitle;
   final String? actionLabel;
   final VoidCallback? onAction;
+  final String? secondaryActionLabel;
+  final VoidCallback? onSecondaryAction;
 
   @override
   Widget build(BuildContext context) {
@@ -379,11 +466,18 @@ class _MessageView extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            if (actionLabel != null && onAction != null) ...[
+            if (actionLabel != null) ...[
               const SizedBox(height: 16),
               FilledButton.tonal(
                 onPressed: onAction,
                 child: Text(actionLabel!),
+              ),
+            ],
+            if (secondaryActionLabel != null) ...[
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: onSecondaryAction,
+                child: Text(secondaryActionLabel!),
               ),
             ],
           ],

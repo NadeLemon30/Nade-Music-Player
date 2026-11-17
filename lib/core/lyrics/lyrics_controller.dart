@@ -41,6 +41,9 @@ class LyricsState {
   bool get hasLyrics => lyrics != null && lyrics!.lines.isNotEmpty;
   bool get isSynced => hasLyrics && lyrics!.synchronized;
 
+  /// True when the displayed lyrics were imported by the user from a file.
+  bool get isImported => lyrics?.source == LyricsRepository.importedSource;
+
   LyricsState copyWith({
     Track? track,
     bool clearTrack = false,
@@ -228,11 +231,40 @@ class LyricsController extends Notifier<LyricsState> {
     state = const LyricsState();
   }
 
+  /// Imports a user-selected lyrics file for the current track, persists it,
+  /// and reloads the lyrics display.
+  ///
+  /// Throws [LyricsReadException] when the file has no readable lyrics.
+  Future<void> importLyricsBytes(List<int> bytes, {String? fileName}) async {
+    final track = state.track ?? ref.read(playerNotifierProvider).currentTrack;
+    if (track == null) return;
+    await _repo.importLyricsBytes(track, bytes, fileName: fileName);
+    // If playback moved on while the import was in flight, don't reload the
+    // old track over the current one; the import is persisted for next time.
+    if (ref.read(playerNotifierProvider).currentTrack?.id != track.id) return;
+    await loadForTrack(track.id, track: track);
+  }
+
+  /// Removes user-imported lyrics for the current track, restoring embedded or
+  /// local lyrics (or the unavailable state) on the next lookup.
+  Future<void> removeImportedLyrics() async {
+    final track = state.track ?? ref.read(playerNotifierProvider).currentTrack;
+    if (track == null) return;
+    await _repo.removeImportedLyrics(track.id);
+    if (ref.read(playerNotifierProvider).currentTrack?.id != track.id) return;
+    await loadForTrack(track.id, track: track);
+  }
+
   /// Clears cached lyrics for the current track and reloads.
+  ///
+  /// Imported lyrics are kept: they are an explicit user choice, not a stale
+  /// cache entry. Use [removeImportedLyrics] to drop them.
   Future<void> refreshCurrent() async {
     final track = state.track ?? ref.read(playerNotifierProvider).currentTrack;
     if (track == null) return;
-    await _repo.removeLyrics(track.id);
+    if (!state.isImported) {
+      await _repo.removeLyrics(track.id);
+    }
     await loadForTrack(track.id, track: track);
   }
 

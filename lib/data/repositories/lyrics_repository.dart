@@ -21,12 +21,16 @@ class LyricsReadException implements Exception {
   String toString() => 'LyricsReadException($path, $cause)';
 }
 
-/// Resolves lyrics for a track from embedded metadata, local files, or cache.
+/// Resolves lyrics for a track from user imports, embedded metadata, local
+/// files, or cache.
 ///
-/// Priority (spec 4C): embedded → local .lrc → local plain text → cache →
-/// unavailable (null).
+/// Priority (spec 4C): user-imported cache → embedded → local .lrc → local
+/// plain text → normal cache → unavailable (null).
 class LyricsRepository {
   LyricsRepository({this.customCacheDir});
+
+  /// Source tag for lyrics the user attached from a local file.
+  static const String importedSource = 'imported';
 
   final String? customCacheDir;
   String? _resolvedCacheDir;
@@ -81,6 +85,14 @@ class LyricsRepository {
       return _memory[track.id];
     }
 
+    // Lyrics the user explicitly imported from a file win over embedded and
+    // local sources until they are removed (the normal order applies again).
+    final cached = await getCachedLyrics(track.id);
+    if (cached != null && cached.source == importedSource) {
+      _memory[track.id] = cached;
+      return cached;
+    }
+
     Lyrics? result;
 
     try {
@@ -91,17 +103,14 @@ class LyricsRepository {
 
     result ??= await getLocalLyrics(track);
 
-    if (result == null) {
-      result = await getCachedLyrics(track.id);
-      if (result != null) {
-        result = Lyrics(
-          trackId: result.trackId,
-          lines: result.lines,
-          synchronized: result.synchronized,
-          source: result.source ?? 'cache',
-          lrcOffset: result.lrcOffset,
-        );
-      }
+    if (result == null && cached != null) {
+      result = Lyrics(
+        trackId: cached.trackId,
+        lines: cached.lines,
+        synchronized: cached.synchronized,
+        source: cached.source ?? 'cache',
+        lrcOffset: cached.lrcOffset,
+      );
     }
     // Local/embedded sources are already available on disk; do not cache raw
     // local files unnecessarily. Cached (including future online) lyrics are
@@ -267,6 +276,74 @@ class LyricsRepository {
       await file.writeAsString(jsonEncode(lyrics.toMap()), flush: true);
     } catch (e) {
       debugPrint('LyricsRepository: cache write failed: $e');
+    }
+  }
+
+  // -------------------- User-imported lyrics --------------------
+
+  /// Imports lyrics from user-selected file content for [track] and persists
+  /// them in the lyrics cache. Imported lyrics take precedence over embedded
+  /// and local lyrics until [removeImportedLyrics] is called.
+  ///
+  /// Throws [LyricsReadException] when [content] is blank or contains no
+  /// lyrics.
+  Future<Lyrics> importLyrics(
+    Track track,
+    String content, {
+    String? fileName,
+  }) async {
+    if (content.trim().isEmpty) {
+      throw LyricsReadException(fileName ?? track.id, 'Empty lyrics file');
+    }
+
+    final parsed = LrcParser.parse(track.id, content, source: importedSource);
+    if (parsed.isEmpty) {
+      throw LyricsReadException(fileName ?? track.id, 'No lyrics found');
+    }
+
+    await saveLyrics(parsed);
+    return parsed;
+  }
+
+  /// Imports a user-selected lyrics file from raw [bytes], decoding UTF-8 or
+  /// UTF-16 content before parsing.
+  Future<Lyrics> importLyricsBytes(
+    Track track,
+    List<int> bytes, {
+    String? fileName,
+  }) {
+    return importLyrics(track, decodeLyricsBytes(bytes), fileName: fileName);
+  }
+
+  /// Removes user-imported lyrics for [trackId], restoring the normal
+  /// embedded/local/cache resolution on the next lookup.
+  Future<void> removeImportedLyrics(String trackId) async {
+    final current = _memory[trackId] ?? await getCachedLyrics(trackId);
+    if (current == null || current.source != importedSource) return;
+    await removeLyrics(trackId);
+  }
+
+  /// Decodes lyric-file bytes, handling UTF-8 (with or without BOM) and both
+  /// UTF-16 byte orders, falling back to Latin-1 for legacy encodings.
+  static String decodeLyricsBytes(List<int> bytes) {
+    if (bytes.length >= 2) {
+      if (bytes[0] == 0xFF && bytes[1] == 0xFE) {
+        return _decodeUtf16Le(bytes.sublist(2));
+      }
+      if (bytes[0] == 0xFE && bytes[1] == 0xFF) {
+        return _decodeUtf16Be(bytes.sublist(2));
+      }
+    }
+    if (bytes.length >= 3 &&
+        bytes[0] == 0xEF &&
+        bytes[1] == 0xBB &&
+        bytes[2] == 0xBF) {
+      return utf8.decode(bytes.sublist(3), allowMalformed: true);
+    }
+    try {
+      return utf8.decode(bytes);
+    } catch (_) {
+      return latin1.decode(bytes, allowInvalid: true);
     }
   }
 
